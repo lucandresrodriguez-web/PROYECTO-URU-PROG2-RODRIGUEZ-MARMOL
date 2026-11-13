@@ -7,6 +7,7 @@
 #include <ctime>
 #include <cctype>
 #include <cmath>
+<<<<<<< HEAD
 #include <fstream>
 
 using namespace std;
@@ -219,6 +220,11 @@ public:
     }
 };
 
+=======
+
+using namespace std;
+
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 void limpiarTerminal() {
 #ifdef _WIN32
     system("cls");
@@ -229,14 +235,19 @@ void limpiarTerminal() {
 
 void pausarParaContinuar() {
     cout << "\nPresione Enter para volver al menu...";
+<<<<<<< HEAD
     if (entradaConSaltoPendiente) {
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         entradaConSaltoPendiente = false;
     }
+=======
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     cin.get();
 }
 
 //ESTRUCTURAS DE DATOS
+<<<<<<< HEAD
 struct ArchivoHeader {
     int cantidadRegistros;
     int proximoID;
@@ -244,15 +255,23 @@ struct ArchivoHeader {
     int version;
 };
 
+=======
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 struct Taller {
     char nombre[100]; 
     char rif[20];
     char direccion[200];
     char telefono[20];
+<<<<<<< HEAD
     time_t fechaCreacion;
     time_t fechaUltimaModificacion;
 };
 
+=======
+};
+
+//Estructura Vehiculo
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 struct Vehiculo {
     int id;
     char placa[10] = {};
@@ -264,17 +283,24 @@ struct Vehiculo {
     char cedulaPropietario[20];
     char telefonoPropietario[20];
     char fechaRegistro[11];
+<<<<<<< HEAD
 
     bool eliminado;
     time_t fechaCreacion;
     time_t fechaUltimaModificacion;
 };
 
+=======
+};
+
+//Estructura Mecanico
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 struct Mecanico {
     int id;
     char nombre[100];
     char cedula[20];
     char especialidad[20];
+<<<<<<< HEAD
     char fechaIngreso[11];
 
     bool eliminado;
@@ -282,6 +308,13 @@ struct Mecanico {
     time_t fechaUltimaModificacion;
 };
 
+=======
+
+    char fechaIngreso[11];
+};
+
+//Estructura Repuesto
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 struct Repuesto {
     int id;
     char codigo[20];
@@ -291,6 +324,7 @@ struct Repuesto {
     int stock;
     int stockMinimo;
     char fechaRegistro[11];
+<<<<<<< HEAD
 
     bool eliminado;
     time_t fechaCreacion;
@@ -300,6 +334,13 @@ struct Repuesto {
 struct DetalleOrden {
     int idRepuesto;
     char codigoRepuesto[20];
+=======
+};
+
+//Estructuras DetalleOrden y OrdenServicio
+struct DetalleOrden {
+    int idRepuesto;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     char nombreRepuesto[100];
     int cantidad;
     float precioUnitario;
@@ -315,6 +356,7 @@ struct OrdenServicio {
     char descripcionFalla[200];
     int kilometrajeIngreso;
     float manoObra;
+<<<<<<< HEAD
     
     DetalleOrden lineasDetalle[15];
     int cantidadLineasUsadas;
@@ -325,6 +367,15 @@ struct OrdenServicio {
 };
 
 struct SistemaTaller {
+=======
+    DetalleOrden* repuestosUsados;
+    int           numRepuestosUsados;
+    int           capacidadRepuestosUsados;
+};
+
+//Estructura Principal: SistemaTaller
+struct SistemaTaller{
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     Taller taller;
 
     Vehiculo*      vehiculos; int numVehiculos; int capacidadVehiculos;
@@ -338,6 +389,7 @@ struct SistemaTaller {
     int siguienteIdOrdenes;
 };
 
+<<<<<<< HEAD
 // PERSISTENCIA ARCHIVOS BIN 
 const char* ARCHIVO_VEHICULOS = "vehiculos.bin";
 const char* ARCHIVO_MECANICOS = "mecanicos.bin";
@@ -482,6 +534,8 @@ void cargarDatos(SistemaTaller& s) {
 }
 
 // Prototipos de funciones
+=======
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 Vehiculo* buscarVehiculoPorID(SistemaTaller* s, int id);
 Vehiculo* buscarVehiculoPorPlaca(SistemaTaller* s, const char* placa);
 Vehiculo** listarVehiculos(SistemaTaller* s, int* cantidad);
@@ -508,6 +562,7 @@ bool confirmarAccion(const char* mensaje);
 bool esCancelar(const char* texto);
 bool contieneSinMayusculas(const char* texto, const char* fragmento);
 
+<<<<<<< HEAD
 bool leerTexto(const char* mensaje, char* valor, size_t capacidad) {
     return Validaciones::leerTexto(mensaje, valor, capacidad) == ResultadoEntrada::Correcto;
 }
@@ -522,10 +577,87 @@ bool leerDecimalRango(const char* mensaje, double minimo, double maximo, double&
 
 void mostrarOpcionVolver() {
     cout << "Escriba CANCELAR para volver al menu o ATRAS para regresar al campo anterior." << endl;
+=======
+template <typename T>
+bool leerValor(const char* mensaje, T& valor) {
+    while (true) {
+        cout << mensaje;
+        if (cin >> valor) return true;
+        if (cin.eof()) return false;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "[!] Valor invalido; intentelo de nuevo." << endl;
+    }
+}
+
+bool leerTexto(const char* mensaje, char* valor, size_t capacidad) {
+    while (true) {
+        cout << mensaje;
+        if (!cin.getline(valor, static_cast<streamsize>(capacidad))) {
+            if (cin.eof()) return false;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "[!] El texto excede el limite permitido." << endl;
+            continue;
+        }
+        if (esCancelar(valor)) return false;
+        bool contieneCaracter = false;
+        for (size_t i = 0; valor[i] != '\0'; ++i) {
+            if (iscntrl(static_cast<unsigned char>(valor[i]))) {
+                cout << "[!] No se permiten caracteres de control." << endl;
+                contieneCaracter = false;
+                break;
+            }
+            if (!isspace(static_cast<unsigned char>(valor[i]))) contieneCaracter = true;
+        }
+        if (contieneCaracter) return true;
+        cout << "[!] El campo no puede quedar vacio." << endl;
+    }
+}
+
+bool leerEnteroRango(const char* mensaje, int minimo, int maximo, int& valor) {
+    char entrada[64];
+    while (true) {
+        if (!leerTexto(mensaje, entrada, sizeof(entrada))) return false;
+        char* fin = nullptr;
+        long numero = strtol(entrada, &fin, 10);
+        while (fin != nullptr && isspace(static_cast<unsigned char>(*fin))) ++fin;
+        if (fin != entrada && fin != nullptr && *fin == '\0' &&
+            numero >= minimo && numero <= maximo) {
+            valor = static_cast<int>(numero);
+            return true;
+        }
+        cout << "[!] Ingrese un numero entero entre " << minimo << " y " << maximo << "." << endl;
+    }
+}
+
+bool leerDecimalRango(const char* mensaje, double minimo, double maximo, double& valor) {
+    char entrada[64];
+    while (true) {
+        if (!leerTexto(mensaje, entrada, sizeof(entrada))) return false;
+        char* fin = nullptr;
+        double numero = strtod(entrada, &fin);
+        while (fin != nullptr && isspace(static_cast<unsigned char>(*fin))) ++fin;
+        if (fin != entrada && fin != nullptr && *fin == '\0' &&
+            isfinite(numero) && numero >= minimo && numero <= maximo) {
+            valor = numero;
+            return true;
+        }
+        cout << "[!] Ingrese un numero entre " << minimo << " y " << maximo << "." << endl;
+    }
+}
+
+void mostrarOpcionVolver() {
+    cout << "Escriba CANCELAR en cualquier campo para volver al menu." << endl;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 }
 
 //SISTEMA GENERAL 
 void inicializarSistema(SistemaTaller &s, Taller infoTaller) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     s.taller = infoTaller;
 
     s.capacidadVehiculos = 4;
@@ -547,13 +679,24 @@ void inicializarSistema(SistemaTaller &s, Taller infoTaller) {
     s.siguienteIdOrdenes = 1;
     s.siguienteIdRepuestos = 1;
     s.siguienteIdVehiculos = 1;
+<<<<<<< HEAD
 }
 
 void liberarSistema(SistemaTaller &s) {
+=======
+};
+
+void liberarSistema(SistemaTaller &s) {
+    for (int i = 0; i < s.numOrdenes; i++) {
+        delete[] s.ordenes[i].repuestosUsados;
+    }
+    
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     delete[] s.vehiculos;
     delete[] s.repuestos;
     delete[] s.mecanicos;
     delete[] s.ordenes; 
+<<<<<<< HEAD
 }
 
 bool cedulaValida(const char* cedula) {
@@ -562,6 +705,39 @@ bool cedulaValida(const char* cedula) {
 
 bool fechaValida(const char* fecha) {
     return Validaciones::fechaValida(fecha);
+=======
+};
+
+bool cedulaValida(const char* cedula) {
+    if (cedula == nullptr) return false;
+    const char* digitos = cedula;
+    char prefijo = static_cast<char>(toupper(static_cast<unsigned char>(cedula[0])));
+    if ((prefijo == 'V' || prefijo == 'E') && cedula[1] == '-') {
+        digitos += 2;
+    }
+    if (*digitos == '\0') return false;
+    for (const char* p = digitos; *p != '\0'; ++p) {
+        if (!isdigit(static_cast<unsigned char>(*p))) return false;
+    }
+    return true;
+}
+
+bool fechaValida(const char* fecha) {
+    if (fecha == nullptr || strlen(fecha) != 10 ||
+        fecha[4] != '-' || fecha[7] != '-') return false;
+    for (int i = 0; i < 10; ++i) {
+        if (i != 4 && i != 7 && !isdigit(static_cast<unsigned char>(fecha[i]))) return false;
+    }
+    int anio = atoi(fecha);
+    int mes = atoi(fecha + 5);
+    int dia = atoi(fecha + 8);
+    if (mes < 1 || mes > 12) return false;
+    const int diasMes[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    int maxDia = diasMes[mes - 1];
+    bool bisiesto = (anio % 4 == 0 && anio % 100 != 0) || anio % 400 == 0;
+    if (mes == 2 && bisiesto) maxDia = 29;
+    return dia >= 1 && dia <= maxDia;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 }
 
 void obtenerFechaActual(char* fecha, size_t capacidad) {
@@ -582,10 +758,15 @@ bool confirmarAccion(const char* mensaje) {
             if (cin.eof()) return false;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
             entradaConSaltoPendiente = false;
             continue;
         }
         entradaConSaltoPendiente = true;
+=======
+            continue;
+        }
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         respuesta = static_cast<char>(toupper(static_cast<unsigned char>(respuesta)));
         if (respuesta == 'S') return true;
         if (respuesta == 'N') return false;
@@ -594,11 +775,36 @@ bool confirmarAccion(const char* mensaje) {
 }
 
 bool esCancelar(const char* texto) {
+<<<<<<< HEAD
     return Validaciones::esComando(texto, "CANCELAR");
 }
 
 bool contieneSinMayusculas(const char* texto, const char* fragmento) {
     return Validaciones::contieneSinMayusculas(texto, fragmento);
+=======
+    if (texto == nullptr || strlen(texto) != 8) return false;
+    const char palabra[] = "CANCELAR";
+    for (int i = 0; i < 8; ++i) {
+        if (toupper(static_cast<unsigned char>(texto[i])) != palabra[i]) return false;
+    }
+    return true;
+}
+
+bool contieneSinMayusculas(const char* texto, const char* fragmento) {
+    if (texto == nullptr || fragmento == nullptr) return false;
+    size_t largoTexto = strlen(texto);
+    size_t largoFragmento = strlen(fragmento);
+    if (largoFragmento == 0) return true;
+    if (largoFragmento > largoTexto) return false;
+    for (size_t inicio = 0; inicio + largoFragmento <= largoTexto; ++inicio) {
+        size_t j = 0;
+        while (j < largoFragmento &&
+               toupper(static_cast<unsigned char>(texto[inicio + j])) ==
+               toupper(static_cast<unsigned char>(fragmento[j]))) ++j;
+        if (j == largoFragmento) return true;
+    }
+    return false;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 }
 
 bool cadenaTerminada(const char* texto, size_t capacidad) {
@@ -606,6 +812,7 @@ bool cadenaTerminada(const char* texto, size_t capacidad) {
 }
 
 bool textoNoVacio(const char* texto) {
+<<<<<<< HEAD
     return Validaciones::textoNoVacio(texto);
 }
 
@@ -619,6 +826,51 @@ bool telefonoValido(const char* telefono) {
 
 bool igualSinMayusculas(const char* a, const char* b) {
     return Validaciones::igualSinMayusculas(a, b);
+=======
+    if (texto == nullptr) return false;
+    for (size_t i = 0; texto[i] != '\0'; ++i) {
+        if (iscntrl(static_cast<unsigned char>(texto[i]))) return false;
+        if (!isspace(static_cast<unsigned char>(texto[i]))) return true;
+    }
+    return false;
+}
+
+bool placaValida(const char* placa) {
+    if (placa == nullptr) return false;
+    size_t largo = strlen(placa);
+    if (largo < 6 || largo > 7) return false;
+    for (size_t i = 0; i < largo; ++i) {
+        if (!isalnum(static_cast<unsigned char>(placa[i]))) return false;
+    }
+    return true;
+}
+
+bool telefonoValido(const char* telefono) {
+    if (telefono == nullptr) return false;
+    int digitos = 0;
+    for (size_t i = 0; telefono[i] != '\0'; ++i) {
+        unsigned char caracter = static_cast<unsigned char>(telefono[i]);
+        if (isdigit(caracter)) {
+            ++digitos;
+        } else if (telefono[i] != '+' && telefono[i] != '-' &&
+                   telefono[i] != '(' && telefono[i] != ')' &&
+                   !isspace(caracter)) {
+            return false;
+        }
+    }
+    return digitos >= 7 && digitos <= 15;
+}
+
+bool igualSinMayusculas(const char* a, const char* b) {
+    if (a == nullptr || b == nullptr) return false;
+    while (*a != '\0' && *b != '\0') {
+        if (toupper(static_cast<unsigned char>(*a)) !=
+            toupper(static_cast<unsigned char>(*b))) return false;
+        ++a;
+        ++b;
+    }
+    return *a == '\0' && *b == '\0';
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 }
 
 //SISTEMA DE VEHICULOS 
@@ -632,7 +884,11 @@ void redimensionarVehiculos(SistemaTaller* s) {
 
     delete[] s->vehiculos;
     s->vehiculos = nuevosVehiculos;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 bool datosVehiculoValidos(SistemaTaller* s, const Vehiculo& datos, int idIgnorado) {
     if (!cadenaTerminada(datos.placa, sizeof(datos.placa)) ||
@@ -654,6 +910,7 @@ bool datosVehiculoValidos(SistemaTaller* s, const Vehiculo& datos, int idIgnorad
     return true;
 }
 
+<<<<<<< HEAD
 bool capturarDatosVehiculo(SistemaTaller* s, Vehiculo& datos, int idIgnorado,
                            int kilometrajeMinimo) {
     int campo = 0;
@@ -725,6 +982,8 @@ bool capturarDatosVehiculo(SistemaTaller* s, Vehiculo& datos, int idIgnorado,
     return true;
 }
 
+=======
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 Vehiculo* agregarVehiculo(SistemaTaller* s, Vehiculo datos) {
     if (!datosVehiculoValidos(s, datos, -1)) return nullptr;
     for (size_t i = 0; datos.placa[i] != '\0'; ++i)
@@ -741,7 +1000,11 @@ Vehiculo* agregarVehiculo(SistemaTaller* s, Vehiculo datos) {
     s->numVehiculos++;
 
     return &(s->vehiculos[s->numVehiculos - 1]);
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 Vehiculo* buscarVehiculoPorID(SistemaTaller* s, int id) {
     for (int i = 0; i < s->numVehiculos; i++) {
@@ -750,7 +1013,11 @@ Vehiculo* buscarVehiculoPorID(SistemaTaller* s, int id) {
         }
     }
     return nullptr;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 Vehiculo* buscarVehiculoPorPlaca(SistemaTaller* s, const char* placa){
     for (int i = 0; i < s->numVehiculos; i++) {
@@ -759,7 +1026,11 @@ Vehiculo* buscarVehiculoPorPlaca(SistemaTaller* s, const char* placa){
         }
     }
     return nullptr;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 Vehiculo** buscarVehiculosPorPropietario(SistemaTaller* s, const char* subcadena, int* cantidad) {
     int encontrados = 0;
@@ -790,7 +1061,11 @@ Vehiculo** listarVehiculos(SistemaTaller* s, int* cantidad) {
         lista[i] = &(s->vehiculos[i]);
     }
     return lista;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 bool actualizarVehiculo(SistemaTaller* s, int id, Vehiculo datos) {
     Vehiculo* v = buscarVehiculoPorID(s, id);
@@ -810,7 +1085,11 @@ bool actualizarVehiculo(SistemaTaller* s, int id, Vehiculo datos) {
         v->cedulaPropietario[0] = static_cast<char>(toupper(static_cast<unsigned char>(v->cedulaPropietario[0])));
     strcpy(v->telefonoPropietario, datos.telefonoPropietario);
     return true;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 bool eliminarVehiculo(SistemaTaller* s, int id) {
     int pos = -1;
@@ -832,7 +1111,11 @@ bool eliminarVehiculo(SistemaTaller* s, int id) {
     
     s->numVehiculos--;
     return true;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void mostrarVehiculo(Vehiculo* vehiculo) {
     if (vehiculo == nullptr) {
@@ -859,6 +1142,7 @@ void menuRegistrarVehiculo(SistemaTaller* s) {
     cout << "\n--- REGISTRAR VEHICULO ---" << endl;
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
     if (!capturarDatosVehiculo(s, nuevo, -1, 0)) return;
     if (!confirmarAccion("Guardar vehiculo")) return;
     Vehiculo* creado = agregarVehiculo(s, nuevo);
@@ -868,11 +1152,58 @@ void menuRegistrarVehiculo(SistemaTaller* s) {
     }
     cout << "[OK] Vehiculo registrado con ID " << creado->id << "." << endl;
 }
+=======
+    while (true) {
+        if (!leerTexto("Placa (6-7 caracteres alfanumericos): ",
+                       nuevo.placa, sizeof(nuevo.placa))) return;
+        if (!placaValida(nuevo.placa)) {
+            cout << "[!] La placa debe tener 6 o 7 caracteres alfanumericos." << endl;
+            continue;
+        }
+        if (buscarVehiculoPorPlaca(s, nuevo.placa) != nullptr) {
+            cout << "[!] Esa placa ya esta registrada." << endl;
+            continue;
+        }
+        break;
+    }
+    for (size_t i = 0; nuevo.placa[i] != '\0'; ++i)
+        nuevo.placa[i] = static_cast<char>(toupper(static_cast<unsigned char>(nuevo.placa[i])));
+    if (!leerTexto("Marca: ", nuevo.marca, sizeof(nuevo.marca)) ||
+        !leerTexto("Modelo: ", nuevo.modelo, sizeof(nuevo.modelo)) ||
+        !leerEnteroRango("Anio (1950-2027): ", 1950, 2027, nuevo.anio) ||
+        !leerEnteroRango("Kilometraje (0 o mayor): ", 0, numeric_limits<int>::max(), nuevo.kilometraje) ||
+        !leerTexto("Nombre del propietario: ", nuevo.nombrePropietario,
+                   sizeof(nuevo.nombrePropietario))) return;
+
+    while (true) {
+        if (!leerTexto("Cedula del propietario (digitos, V- o E- opcional): ",
+                       nuevo.cedulaPropietario, sizeof(nuevo.cedulaPropietario))) return;
+        if (cedulaValida(nuevo.cedulaPropietario)) break;
+        cout << "[!] Use solo digitos, opcionalmente precedidos por V- o E-." << endl;
+    }
+    if (nuevo.cedulaPropietario[0] == 'v' || nuevo.cedulaPropietario[0] == 'e')
+        nuevo.cedulaPropietario[0] = static_cast<char>(toupper(static_cast<unsigned char>(nuevo.cedulaPropietario[0])));
+
+    while (true) {
+        if (!leerTexto("Telefono del propietario (7-15 digitos): ",
+                       nuevo.telefonoPropietario, sizeof(nuevo.telefonoPropietario))) return;
+        if (telefonoValido(nuevo.telefonoPropietario)) break;
+        cout << "[!] Ingrese un telefono con 7-15 digitos; puede usar +, espacios, guiones o parentesis." << endl;
+    }
+    if (!confirmarAccion("Guardar vehiculo")) return;
+    if (agregarVehiculo(s, nuevo) == nullptr) {
+        cout << "[!] No se pudo registrar el vehiculo; revise sus datos." << endl;
+        return;
+    }
+    cout << "[OK] Vehiculo registrado." << endl;
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void menuBuscarVehiculo(SistemaTaller* s) {
     limpiarTerminal();
     int opcion = 0;
     cout << "\n--- BUSCAR VEHICULO ---\n1. Por ID\n2. Por placa\n3. Por propietario\n";
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     int campo = 0;
@@ -908,24 +1239,72 @@ void menuBuscarVehiculo(SistemaTaller* s) {
         if (!Validaciones::procesarResultado(resultado, campo)) return;
     }
 }
+=======
+    if (!leerValor("Opcion: ", opcion)) return;
+    if (opcion == 1) {
+        int id;
+        if (!leerValor("ID: ", id)) return;
+        mostrarVehiculo(buscarVehiculoPorID(s, id));
+    } else if (opcion == 2) {
+        char placa[10];
+        cout << "Placa: ";
+        cin >> setw(sizeof(placa)) >> placa;
+        mostrarVehiculo(buscarVehiculoPorPlaca(s, placa));
+    } else if (opcion == 3) {
+        char nombre[100];
+        cout << "Nombre o fragmento: ";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.getline(nombre, sizeof(nombre));
+        int cantidad = 0;
+        Vehiculo** lista = buscarVehiculosPorPropietario(s, nombre, &cantidad);
+        mostrarListaVehiculos(lista, cantidad);
+        delete[] lista;
+    } else {
+        cout << "[!] Opcion invalida." << endl;
+    }
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void menuActualizarVehiculo(SistemaTaller* s) {
     limpiarTerminal();
     int id = 0;
     cout << "\n--- ACTUALIZAR VEHICULO ---" << endl;
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     ResultadoEntrada resultado = Validaciones::leerEnteroRango(
         "Ingrese el ID del vehiculo a actualizar: ", 1, numeric_limits<int>::max(), id);
     if (resultado != ResultadoEntrada::Correcto) return;
+=======
+    if (!leerValor("Ingrese el ID del vehiculo a actualizar: ", id)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     Vehiculo* vExistente = buscarVehiculoPorID(s, id);
     if (vExistente == nullptr) {
         cout << "[!] No se encontro un vehiculo con el ID " << id << endl;
         return;
     }
+<<<<<<< HEAD
     Vehiculo datosNuevos = {};
     if (!capturarDatosVehiculo(s, datosNuevos, id, vExistente->kilometraje)) return;
+=======
+
+    Vehiculo datosNuevos = {};
+    mostrarOpcionVolver();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    if (!leerTexto("Nueva placa: ", datosNuevos.placa, sizeof(datosNuevos.placa)) ||
+        !leerTexto("Nueva marca: ", datosNuevos.marca, sizeof(datosNuevos.marca)) ||
+        !leerTexto("Nuevo modelo: ", datosNuevos.modelo, sizeof(datosNuevos.modelo)) ||
+        !leerEnteroRango("Anio (1950-2027): ", 1950, 2027, datosNuevos.anio) ||
+        !leerEnteroRango("Nuevo kilometraje (0 o mayor): ", 0, numeric_limits<int>::max(),
+                         datosNuevos.kilometraje) ||
+        !leerTexto("Nuevo propietario: ", datosNuevos.nombrePropietario,
+                   sizeof(datosNuevos.nombrePropietario)) ||
+        !leerTexto("Nueva cedula: ", datosNuevos.cedulaPropietario,
+                   sizeof(datosNuevos.cedulaPropietario)) ||
+        !leerTexto("Nuevo telefono: ", datosNuevos.telefonoPropietario,
+                   sizeof(datosNuevos.telefonoPropietario))) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     if (!confirmarAccion("Guardar cambios del vehiculo")) return;
     if (actualizarVehiculo(s, id, datosNuevos)) {
@@ -933,12 +1312,17 @@ void menuActualizarVehiculo(SistemaTaller* s) {
     } else {
         cout << "[!] Error al actualizar." << endl;
     }
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void menuEliminarVehiculo(SistemaTaller* s) {
     limpiarTerminal();
     int id = 0;
     cout << "\n--- ELIMINAR VEHICULO ---\n";
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     if (Validaciones::leerEnteroRango("ID: ", 1, numeric_limits<int>::max(), id) !=
@@ -947,6 +1331,13 @@ void menuEliminarVehiculo(SistemaTaller* s) {
     cout << (eliminarVehiculo(s, id) ? "[OK] Vehiculo eliminado." :
              "[!] No existe o tiene ordenes asociadas.") << endl;
 }
+=======
+    if (!leerValor("ID: ", id)) return;
+    if (!confirmarAccion("Eliminar vehiculo")) return;
+    cout << (eliminarVehiculo(s, id) ? "[OK] Vehiculo eliminado." :
+             "[!] No existe o tiene ordenes asociadas.") << endl;
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void menuListarVehiculos(SistemaTaller* s) {
     limpiarTerminal();
@@ -987,8 +1378,11 @@ void redimensionarMecanicos(SistemaTaller* s) {
 }
 
 Mecanico* agregarMecanico(SistemaTaller* s, Mecanico datos) {
+<<<<<<< HEAD
     Validaciones::convertirAMayusculas(datos.cedula);
     Validaciones::convertirAMayusculas(datos.especialidad);
+=======
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     const char* especialidades[] = {"MOTOR", "FRENOS", "ELECTRICIDAD", "SUSPENSION", "GENERAL"};
     bool especialidadValida = false;
     for (size_t i = 0; i < sizeof(especialidades) / sizeof(especialidades[0]); ++i) {
@@ -1006,7 +1400,11 @@ Mecanico* agregarMecanico(SistemaTaller* s, Mecanico datos) {
     s->numMecanicos++;
 
     return &(s->mecanicos[s->numMecanicos - 1]);
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 Mecanico* buscarMecanicoporID(SistemaTaller* s, int id) {
     for (int i = 0; i < s->numMecanicos; i++) {
@@ -1015,33 +1413,54 @@ Mecanico* buscarMecanicoporID(SistemaTaller* s, int id) {
         }
     }
     return nullptr;
+<<<<<<< HEAD
 }
 
 Mecanico* buscarMecanicoporCedula(SistemaTaller* s, const char* cedula) {
     for (int i = 0; i < s->numMecanicos; i++) {
         if (igualSinMayusculas(s->mecanicos[i].cedula, cedula)) {
+=======
+};
+
+Mecanico* buscarMecanicoporCedula(SistemaTaller* s, const char* cedula) {
+    for (int i = 0; i < s->numMecanicos; i++) {
+        if (strcmp(s->mecanicos[i].cedula, cedula) == 0) {
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
             return &(s->mecanicos[i]);
         }
     }
     return nullptr;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 Mecanico* listarMecanico(SistemaTaller* s, int* cantidad) {
     *cantidad = s->numMecanicos;
     if (s->numMecanicos == 0) return nullptr;
     return s->mecanicos;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 int contarOrdenesAbiertasMecanico(SistemaTaller *s, int idMecanico) {
     int cont = 0;
     for (int i = 0; i < s->numOrdenes; i++) {
         if (s->ordenes[i].idMecanico == idMecanico) {
+<<<<<<< HEAD
             if (igualSinMayusculas(s->ordenes[i].estado, "Abierta")) {
+=======
+            if (strcmp(s->ordenes[i].estado, "Abierta") == 0 || strcmp(s->ordenes[i].estado, "ABIERTA") == 0) {
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
                 cont++;
             }
         }
     }
     return cont;
+<<<<<<< HEAD
 }
 
 bool capturarDatosMecanico(SistemaTaller* s, Mecanico& datos) {
@@ -1085,6 +1504,9 @@ bool capturarDatosMecanico(SistemaTaller* s, Mecanico& datos) {
     }
     return true;
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void menuRegistrarMecanico(SistemaTaller* s) {
     limpiarTerminal();
@@ -1092,7 +1514,14 @@ void menuRegistrarMecanico(SistemaTaller* s) {
     cout << "\n--- REGISTRAR NUEVO MECANICO ---" << endl;
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
     if (!capturarDatosMecanico(s, nuevoM)) return;
+=======
+    if (!leerTexto("Nombre completo: ", nuevoM.nombre, sizeof(nuevoM.nombre)) ||
+        !leerTexto("Cedula: ", nuevoM.cedula, sizeof(nuevoM.cedula)) ||
+        !leerTexto("Especialidad (MOTOR, FRENOS, ELECTRICIDAD, SUSPENSION, GENERAL): ",
+                   nuevoM.especialidad, sizeof(nuevoM.especialidad))) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     if (!confirmarAccion("Guardar mecanico")) return;
     nuevoM.fechaIngreso[0] = '\0';
     if (agregarMecanico(s, nuevoM) == nullptr) {
@@ -1100,13 +1529,45 @@ void menuRegistrarMecanico(SistemaTaller* s) {
         return;
     }
     cout << "\n[OK] Mecanico registrado exitosamente." << endl;
+<<<<<<< HEAD
 }
+=======
+};
+
+void menuBuscarMecanico(SistemaTaller* s) {
+    limpiarTerminal();
+    int opc = 0;
+    cout << "\n--- BUSCAR MECANICO ---" << endl;
+    cout << "1. Buscar por ID" << endl;
+    cout << "2. Buscar por cedula" << endl;
+    if (!leerValor("Seleccione una opcion: ", opc)) return;
+
+    if (opc == 1) {
+        int id = 0;
+        if (!leerValor("Ingrese ID del mecanico: ", id)) return;
+        Mecanico* m = buscarMecanicoporID(s, id);
+        mostrarMecanicoUnico(m);
+    } else if (opc == 2) {
+        char ced[20] = {};
+        cout << "Ingrese Cedula: ";
+        cin >> setw(sizeof(ced)) >> ced;
+        Mecanico* m = buscarMecanicoporCedula(s, ced);
+        mostrarMecanicoUnico(m);
+    } else {
+        cout << "[!] Opcion Invalida." << endl;
+    }
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void menuListarMecanico(SistemaTaller* s) {
     limpiarTerminal();
     mostrarListaMecanico(s);
     pausarParaContinuar();
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void mostrarMecanicoUnico(Mecanico *m) {
     if (m == nullptr) {
@@ -1120,6 +1581,7 @@ void mostrarMecanicoUnico(Mecanico *m) {
     cout << "Especialidad: " << m->especialidad << endl;
     cout << "Fecha Ingreso: " << m->fechaIngreso << endl;
     cout << "--------------------------------------------" << endl;
+<<<<<<< HEAD
 }
 
 void mostrarMecanico(SistemaTaller* s) {
@@ -1129,6 +1591,16 @@ void mostrarMecanico(SistemaTaller* s) {
     Mecanico* m = buscarMecanicoporID(s, id);
     mostrarMecanicoUnico(m);
 }
+=======
+};
+
+void mostrarMecanico(SistemaTaller* s) {
+    int id = 0;
+    if (!leerValor("Ingrese el ID del mecanico a mostrar: ", id)) return;
+    Mecanico* m = buscarMecanicoporID(s, id);
+    mostrarMecanicoUnico(m);
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void mostrarListaMecanico(SistemaTaller* s) {
     int cantidad = 0;
@@ -1144,7 +1616,11 @@ void mostrarListaMecanico(SistemaTaller* s) {
         mostrarMecanicoUnico(&lista[i]);
         cout << "Ordenes abiertas: " << contarOrdenesAbiertasMecanico(s, lista[i].id) << endl;
     }
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 //SISTEMA DE REPUESTOS
 void redimensionarRepuestos(SistemaTaller* s) {
@@ -1157,10 +1633,16 @@ void redimensionarRepuestos(SistemaTaller* s) {
 
     delete[] s->repuestos;
     s->repuestos = nuevosRepuestos;
+<<<<<<< HEAD
 }
 
 Repuesto* agregarRepuesto(SistemaTaller* s, Repuesto datos) {
     Validaciones::convertirAMayusculas(datos.codigo);
+=======
+};
+
+Repuesto* agregarRepuesto(SistemaTaller* s, Repuesto datos) {
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     if (datos.precio <= 0.0f || datos.stock < 0 || datos.stockMinimo < 0 ||
         buscarRepuestoPorCodigo(s, datos.codigo) != nullptr) return nullptr;
     if (datos.fechaRegistro[0] == '\0') obtenerFechaActual(datos.fechaRegistro, sizeof(datos.fechaRegistro));
@@ -1173,7 +1655,11 @@ Repuesto* agregarRepuesto(SistemaTaller* s, Repuesto datos) {
     s->numRepuestos++;
 
     return &(s->repuestos[s->numRepuestos - 1]);
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 Repuesto* buscarRepuestoPorID(SistemaTaller* s, int id) {
     for (int i = 0; i < s->numRepuestos; i++) {
@@ -1182,16 +1668,28 @@ Repuesto* buscarRepuestoPorID(SistemaTaller* s, int id) {
         }
     }
     return nullptr;
+<<<<<<< HEAD
 }
 
 Repuesto* buscarRepuestoPorCodigo(SistemaTaller* s, const char* codigo) {
     for (int i = 0; i < s->numRepuestos; i++) {
         if (igualSinMayusculas(s->repuestos[i].codigo, codigo)) {
+=======
+};
+
+Repuesto* buscarRepuestoPorCodigo(SistemaTaller* s, const char* codigo) {
+    for (int i = 0; i < s->numRepuestos; i++) {
+        if (strcmp(s->repuestos[i].codigo, codigo) == 0) {
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
             return &(s->repuestos[i]);
         }
     }
     return nullptr;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 Repuesto* buscarRepuestoPorNombreParcial(SistemaTaller* s, const char* subcadena) {
     for (int i = 0; i < s->numRepuestos; i++) {
@@ -1200,27 +1698,43 @@ Repuesto* buscarRepuestoPorNombreParcial(SistemaTaller* s, const char* subcadena
         }
     }
     return nullptr;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 Repuesto* listarRepuesto(SistemaTaller* s, int* cantidad) {
      *cantidad = s->numRepuestos;
     if (s->numRepuestos == 0) return nullptr;
     return s->repuestos;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 bool menuRegistrarEntradaMercancia(SistemaTaller* s, int idRepuesto, int CantidadAdicional) {
     Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
     if (r == nullptr || CantidadAdicional <= 0 || r->stock > numeric_limits<int>::max() - CantidadAdicional) return false;
     r->stock += CantidadAdicional;
     return true;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 bool cambiarPrecioRepuesto(SistemaTaller* s, int idRepuesto, float nuevoPrecio) {
     Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
     if (r == nullptr || nuevoPrecio <= 0.0f) return false;
     r->precio = nuevoPrecio;
     return true;
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 bool eliminarRepuesto(SistemaTaller* s, int id) {
     int pos = -1;
@@ -1233,8 +1747,13 @@ bool eliminarRepuesto(SistemaTaller* s, int id) {
 
     if (pos == -1) return false;
     for (int i = 0; i < s->numOrdenes; ++i) {
+<<<<<<< HEAD
         for (int j = 0; j < s->ordenes[i].cantidadLineasUsadas; ++j) {
             if (s->ordenes[i].lineasDetalle[j].idRepuesto == id) return false;
+=======
+        for (int j = 0; j < s->ordenes[i].numRepuestosUsados; ++j) {
+            if (s->ordenes[i].repuestosUsados[j].idRepuesto == id) return false;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         }
     }
 
@@ -1244,6 +1763,7 @@ bool eliminarRepuesto(SistemaTaller* s, int id) {
     
     s->numRepuestos--;
     return true;
+<<<<<<< HEAD
 }
 
 bool capturarDatosRepuesto(SistemaTaller* s, Repuesto& datos) {
@@ -1288,6 +1808,9 @@ bool capturarDatosRepuesto(SistemaTaller* s, Repuesto& datos) {
     }
     return true;
 }
+=======
+};
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
 void menuRegistrarRepuesto(SistemaTaller* s) {
     limpiarTerminal();
@@ -1295,7 +1818,20 @@ void menuRegistrarRepuesto(SistemaTaller* s) {
     cout << "\n--- REGISTRAR NUEVO REPUESTO ---" << endl;
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
     if (!capturarDatosRepuesto(s, nuevoR)) return;
+=======
+    double precio = 0.0;
+    if (!leerTexto("Codigo: ", nuevoR.codigo, sizeof(nuevoR.codigo)) ||
+        !leerTexto("Nombre: ", nuevoR.nombre, sizeof(nuevoR.nombre)) ||
+        !leerTexto("Marca: ", nuevoR.marca, sizeof(nuevoR.marca)) ||
+        !leerDecimalRango("Precio unitario (> 0): ", numeric_limits<double>::min(),
+                          numeric_limits<float>::max(), precio) ||
+        !leerEnteroRango("Stock inicial (0 o mayor): ", 0, numeric_limits<int>::max(), nuevoR.stock) ||
+        !leerEnteroRango("Stock minimo (0 o mayor): ", 0, numeric_limits<int>::max(),
+                         nuevoR.stockMinimo)) return;
+    nuevoR.precio = static_cast<float>(precio);
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     nuevoR.fechaRegistro[0] = '\0';
 
     if (!confirmarAccion("Guardar repuesto")) return;
@@ -1313,6 +1849,7 @@ void menuBuscarRepuesto(SistemaTaller* s) {
     cout << "1. Buscar por ID" << endl;
     cout << "2. Buscar por Codigo" << endl;
     cout << "3. Buscar por Nombre (parcial)" << endl;
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     int campo = 0;
@@ -1340,6 +1877,30 @@ void menuBuscarRepuesto(SistemaTaller* s) {
             }
         }
         if (!Validaciones::procesarResultado(resultado, campo)) return;
+=======
+    if (!leerValor("Seleccione una opcion: ", opc)) return;
+
+    if (opc == 1) {
+        int id = 0;
+        if (!leerValor("Ingrese ID del repuesto: ", id)) return;
+        Repuesto* r = buscarRepuestoPorID(s, id);
+        mostrarRepuesto(r);
+    } else if (opc == 2) {
+        char codigo[20] = {};
+        cout << "Ingrese Codigo: ";
+        cin >> setw(sizeof(codigo)) >> codigo;
+        Repuesto* r = buscarRepuestoPorCodigo(s, codigo);
+        mostrarRepuesto(r);
+    } else if (opc == 3) {
+        char sub[100] = {};
+        cout << "Ingrese el nombre o parte del mismo: ";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.getline(sub, 100);
+        Repuesto* r = buscarRepuestoPorNombreParcial(s, sub);
+        mostrarRepuesto(r);
+    } else {
+        cout << "[!] Opcion Invalida." << endl;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     }
 }
 
@@ -1347,6 +1908,7 @@ void menuEntradaMercancia(SistemaTaller* s) {
     limpiarTerminal();
     int id = 0, cant = 0;
     cout << "\n--- REGISTRAR ENTRADA DE MERCANCIA ---" << endl;
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     int campo = 0;
@@ -1357,6 +1919,10 @@ void menuEntradaMercancia(SistemaTaller* s) {
                 "Ingrese la cantidad adicional a sumar al stock: ", 1, numeric_limits<int>::max(), cant);
         if (!Validaciones::procesarResultado(resultado, campo)) return;
     }
+=======
+    if (!leerValor("Ingrese ID del repuesto: ", id) ||
+        !leerValor("Ingrese la cantidad adicional a sumar al stock: ", cant)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     if (!confirmarAccion("Registrar entrada de mercancia")) return;
     if (menuRegistrarEntradaMercancia(s, id, cant)) {
@@ -1369,6 +1935,7 @@ void menuEntradaMercancia(SistemaTaller* s) {
 void menuCambiarPrecio(SistemaTaller* s) {
     limpiarTerminal();
     int id = 0;
+<<<<<<< HEAD
     double precio = 0.0;
     cout << "\n--- CAMBIAR PRECIO DE REPUESTO ---" << endl;
     mostrarOpcionVolver();
@@ -1383,6 +1950,12 @@ void menuCambiarPrecio(SistemaTaller* s) {
         if (!Validaciones::procesarResultado(resultado, campo)) return;
     }
     float nuevoP = static_cast<float>(precio);
+=======
+    float nuevoP = 0.0f;
+    cout << "\n--- CAMBIAR PRECIO DE REPUESTO ---" << endl;
+    if (!leerValor("Ingrese ID del repuesto: ", id) ||
+        !leerValor("Ingrese el nuevo precio: ", nuevoP)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     if (!confirmarAccion("Cambiar precio")) return;
     if (cambiarPrecioRepuesto(s, id, nuevoP)) {
@@ -1396,11 +1969,15 @@ void menuEliminarRepuesto(SistemaTaller* s) {
     limpiarTerminal();
     int id = 0;
     cout << "\n--- ELIMINAR REPUESTO ---" << endl;
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     if (Validaciones::leerEnteroRango(
             "Ingrese el ID del repuesto a eliminar: ", 1, numeric_limits<int>::max(), id) !=
         ResultadoEntrada::Correcto) return;
+=======
+    if (!leerValor("Ingrese el ID del repuesto a eliminar: ", id)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     if (!confirmarAccion("Eliminar repuesto")) return;
     if (eliminarRepuesto(s, id)) {
@@ -1493,7 +2070,11 @@ OrdenServicio* abrirOrden(SistemaTaller* s, int idVehiculo, int idMecanico, cons
         redimensionarOrdenes(s);
     }
 
+<<<<<<< HEAD
     OrdenServicio nuevaO ={};
+=======
+    OrdenServicio nuevaO;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     nuevaO.id = s->siguienteIdOrdenes++;
     nuevaO.idVehiculo = idVehiculo;
     nuevaO.idMecanico = idMecanico;
@@ -1503,7 +2084,13 @@ OrdenServicio* abrirOrden(SistemaTaller* s, int idVehiculo, int idMecanico, cons
     strcpy(nuevaO.fechaCierre, "Pendiente");
     strcpy(nuevaO.estado, "Abierta");
     nuevaO.manoObra = 0.0f;
+<<<<<<< HEAD
     nuevaO.cantidadLineasUsadas = 0;
+=======
+    nuevaO.repuestosUsados = new DetalleOrden[2];
+    nuevaO.numRepuestosUsados = 0;
+    nuevaO.capacidadRepuestosUsados = 2;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     s->ordenes[s->numOrdenes] = nuevaO;
     s->numOrdenes++;
@@ -1519,15 +2106,23 @@ bool agregarRepuestoAOrden(SistemaTaller* s, int idOrden, int idRepuesto, int ca
     Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
     if (r == nullptr || r->stock < cantidad) return false;
 
+<<<<<<< HEAD
     for (int i = 0; i < o->cantidadLineasUsadas; ++i) {
         if (o->lineasDetalle[i].idRepuesto == idRepuesto) {
             if (o->lineasDetalle[i].cantidad > numeric_limits<int>::max() - cantidad) return false;
             o->lineasDetalle[i].cantidad += cantidad;
+=======
+    for (int i = 0; i < o->numRepuestosUsados; ++i) {
+        if (o->repuestosUsados[i].idRepuesto == idRepuesto) {
+            if (o->repuestosUsados[i].cantidad > numeric_limits<int>::max() - cantidad) return false;
+            o->repuestosUsados[i].cantidad += cantidad;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
             r->stock -= cantidad;
             return true;
         }
     }
 
+<<<<<<< HEAD
     if (o->cantidadLineasUsadas >= 15) return false;
 
     r->stock -= cantidad;
@@ -1539,6 +2134,27 @@ bool agregarRepuestoAOrden(SistemaTaller* s, int idOrden, int idRepuesto, int ca
     o->lineasDetalle[idx].precioUnitario = r->precio;
     o->lineasDetalle[idx].cantidad = cantidad;
     o->cantidadLineasUsadas++;
+=======
+    if (o->numRepuestosUsados >= o->capacidadRepuestosUsados) {
+        int nuevaCapacidad = o->capacidadRepuestosUsados * 2;
+        DetalleOrden* nuevosRepuestos = new DetalleOrden[nuevaCapacidad];
+        for (int i = 0; i < o->numRepuestosUsados; i++) {
+            nuevosRepuestos[i] = o->repuestosUsados[i];
+        }
+        delete[] o->repuestosUsados;
+        o->repuestosUsados = nuevosRepuestos;
+        o->capacidadRepuestosUsados = nuevaCapacidad;
+    }
+
+    r->stock -= cantidad;
+
+    int idx = o->numRepuestosUsados;
+    o->repuestosUsados[idx].idRepuesto = r->id;
+    strcpy(o->repuestosUsados[idx].nombreRepuesto, r->nombre);
+    o->repuestosUsados[idx].precioUnitario = r->precio;
+    o->repuestosUsados[idx].cantidad = cantidad;
+    o->numRepuestosUsados++;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     calcularTotalOrden(o);
     return true;
@@ -1549,8 +2165,13 @@ bool quitarRepuestoDeOrden(SistemaTaller* s, int idOrden, int idRepuesto) {
     if (o == nullptr || strcmp(o->estado, "Abierta") != 0) return false;
 
     int pos = -1;
+<<<<<<< HEAD
     for (int i = 0; i < o->cantidadLineasUsadas; i++) {
         if (o->lineasDetalle[i].idRepuesto == idRepuesto) {
+=======
+    for (int i = 0; i < o->numRepuestosUsados; i++) {
+        if (o->repuestosUsados[i].idRepuesto == idRepuesto) {
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
             pos = i;
             break;
         }
@@ -1560,6 +2181,7 @@ bool quitarRepuestoDeOrden(SistemaTaller* s, int idOrden, int idRepuesto) {
 
     Repuesto* r = buscarRepuestoPorID(s, idRepuesto);
     if (r != nullptr) {
+<<<<<<< HEAD
         r->stock += o->lineasDetalle[pos].cantidad;
     }
 
@@ -1567,6 +2189,15 @@ bool quitarRepuestoDeOrden(SistemaTaller* s, int idOrden, int idRepuesto) {
         o->lineasDetalle[i] = o->lineasDetalle[i + 1];
     }
     o->cantidadLineasUsadas--;
+=======
+        r->stock += o->repuestosUsados[pos].cantidad;
+    }
+
+    for (int i = pos; i < o->numRepuestosUsados - 1; i++) {
+        o->repuestosUsados[i] = o->repuestosUsados[i + 1];
+    }
+    o->numRepuestosUsados--;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     calcularTotalOrden(o);
     return true;
@@ -1576,7 +2207,11 @@ bool cerrarOrden(SistemaTaller* s, int idOrden, float manoObra, const char* fech
     OrdenServicio* o = buscarOrdenPorID(s, idOrden);
     if (o == nullptr || strcmp(o->estado, "Abierta") != 0 || manoObra < 0.0f ||
         fechaActual == nullptr || !fechaValida(fechaActual) ||
+<<<<<<< HEAD
         (manoObra == 0.0f && o->cantidadLineasUsadas == 0)) return false;
+=======
+        (manoObra == 0.0f && o->numRepuestosUsados == 0)) return false;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     o->manoObra = manoObra;
     strcpy(o->fechaCierre, fechaActual);
@@ -1589,10 +2224,17 @@ bool anularOrden(SistemaTaller* s, int idOrden) {
     OrdenServicio* o = buscarOrdenPorID(s, idOrden);
     if (o == nullptr || strcmp(o->estado, "Abierta") != 0) return false;
 
+<<<<<<< HEAD
     for (int i = 0; i < o->cantidadLineasUsadas; i++) {
         Repuesto* r = buscarRepuestoPorID(s, o->lineasDetalle[i].idRepuesto);
         if (r != nullptr) {
             r->stock += o->lineasDetalle[i].cantidad;
+=======
+    for (int i = 0; i < o->numRepuestosUsados; i++) {
+        Repuesto* r = buscarRepuestoPorID(s, o->repuestosUsados[i].idRepuesto);
+        if (r != nullptr) {
+            r->stock += o->repuestosUsados[i].cantidad;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         }
     }
 
@@ -1604,8 +2246,13 @@ float calcularTotalOrden(const OrdenServicio* orden) {
     if (orden == nullptr) return 0.0f;
 
     float costoRepuestos = 0.0f;
+<<<<<<< HEAD
     for (int i = 0; i < orden->cantidadLineasUsadas; i++) {
         costoRepuestos += (orden->lineasDetalle[i].precioUnitario * orden->lineasDetalle[i].cantidad);
+=======
+    for (int i = 0; i < orden->numRepuestosUsados; i++) {
+        costoRepuestos += (orden->repuestosUsados[i].precioUnitario * orden->repuestosUsados[i].cantidad);
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     }
 
     return orden->manoObra + costoRepuestos;
@@ -1623,7 +2270,11 @@ OrdenServicio* buscarOrdenPorID(SistemaTaller* s, int id) {
 OrdenServicio** listaOrdenesPorEstado(SistemaTaller* s, const char* estado, int* cantidad) {
     int encontrados = 0;
     for (int i = 0; i < s->numOrdenes; i++) {
+<<<<<<< HEAD
         if (igualSinMayusculas(s->ordenes[i].estado, estado)) {
+=======
+        if (strcmp(s->ordenes[i].estado, estado) == 0) {
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
             encontrados++;
         }
     }
@@ -1633,7 +2284,11 @@ OrdenServicio** listaOrdenesPorEstado(SistemaTaller* s, const char* estado, int*
     OrdenServicio** lista = new OrdenServicio*[encontrados];
     int j = 0;
     for (int i = 0; i < s->numOrdenes; i++) {
+<<<<<<< HEAD
         if (igualSinMayusculas(s->ordenes[i].estado, estado)) {
+=======
+        if (strcmp(s->ordenes[i].estado, estado) == 0) {
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
             lista[j++] = &(s->ordenes[i]);
         }
     }
@@ -1679,6 +2334,7 @@ void menuAbrirOrden(SistemaTaller* s) {
     cout << "\n--- ABRIR NUEVA ORDEN DE SERVICIO ---" << endl;
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
     int campo = 0;
     while (campo < 4) {
         ResultadoEntrada resultado;
@@ -1706,6 +2362,22 @@ void menuAbrirOrden(SistemaTaller* s) {
         }
         if (!Validaciones::procesarResultado(resultado, campo)) return;
     }
+=======
+    if (!leerEnteroRango("Ingrese ID del Vehiculo: ", 1, numeric_limits<int>::max(), idV)) return;
+    if (buscarVehiculoPorID(s, idV) == nullptr) {
+        cout << "[!] Error: El vehiculo no existe." << endl;
+        return;
+    }
+
+    if (!leerEnteroRango("Ingrese ID del Mecanico: ", 1, numeric_limits<int>::max(), idM)) return;
+    if (buscarMecanicoporID(s, idM) == nullptr) {
+        cout << "[!] Error: El mecanico no existe." << endl;
+        return;
+    }
+
+    if (!leerTexto("Descripcion de la falla: ", falla, sizeof(falla)) ||
+        !leerEnteroRango("Kilometraje de ingreso: ", 0, numeric_limits<int>::max(), km)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     obtenerFechaActual(fecha, sizeof(fecha));
     if (!confirmarAccion("Abrir orden")) return;
     if (abrirOrden(s, idV, idM, falla, km, fecha) == nullptr) {
@@ -1719,6 +2391,7 @@ void menuAgregarRepuestoAOrden(SistemaTaller* s) {
     limpiarTerminal();
     int idO = 0, idR = 0, cant = 0;
     cout << "\n--- AGREGAR REPUESTO A ORDEN ---" << endl;
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     int campo = 0;
@@ -1736,6 +2409,11 @@ void menuAgregarRepuestoAOrden(SistemaTaller* s) {
         }
         if (!Validaciones::procesarResultado(resultado, campo)) return;
     }
+=======
+    if (!leerValor("Ingrese ID de la Orden: ", idO) ||
+        !leerValor("Ingrese ID del Repuesto: ", idR) ||
+        !leerValor("Cantidad: ", cant)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     if (!confirmarAccion("Agregar repuesto a la orden")) return;
     if (agregarRepuestoAOrden(s, idO, idR, cant)) {
@@ -1749,6 +2427,7 @@ void menuQuitarRepuestoDeOrden(SistemaTaller* s) {
     limpiarTerminal();
     int idO = 0, idR = 0;
     cout << "\n--- QUITAR REPUESTO DE ORDEN ---" << endl;
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     int campo = 0;
@@ -1760,6 +2439,10 @@ void menuQuitarRepuestoDeOrden(SistemaTaller* s) {
                 "Ingrese ID del Repuesto a retirar: ", 1, numeric_limits<int>::max(), idR);
         if (!Validaciones::procesarResultado(resultado, campo)) return;
     }
+=======
+    if (!leerValor("Ingrese ID de la Orden: ", idO) ||
+        !leerValor("Ingrese ID del Repuesto a retirar: ", idR)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     if (!confirmarAccion("Quitar repuesto de la orden")) return;
     if (quitarRepuestoDeOrden(s, idO, idR)) {
@@ -1772,6 +2455,7 @@ void menuQuitarRepuestoDeOrden(SistemaTaller* s) {
 void menuCerrarOrden(SistemaTaller* s) {
     limpiarTerminal();
     int idO = 0;
+<<<<<<< HEAD
     double manoObraIngresada = 0.0;
     float manoObra = 0.0f;
     char fecha[11] = {};
@@ -1788,6 +2472,14 @@ void menuCerrarOrden(SistemaTaller* s) {
         if (!Validaciones::procesarResultado(resultado, campo)) return;
     }
     manoObra = static_cast<float>(manoObraIngresada);
+=======
+    float manoObra = 0.0f;
+    char fecha[11] = {};
+
+    cout << "\n--- CERRAR ORDEN DE SERVICIO ---" << endl;
+    if (!leerValor("Ingrese ID de la Orden a cerrar: ", idO) ||
+        !leerValor("Costo de Mano de Obra: ", manoObra)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     obtenerFechaActual(fecha, sizeof(fecha));
 
     if (!confirmarAccion("Cerrar orden")) return;
@@ -1802,11 +2494,15 @@ void menuAnularOrden(SistemaTaller* s) {
     limpiarTerminal();
     int idO = 0;
     cout << "\n--- ANULAR ORDEN DE SERVICIO ---" << endl;
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     if (Validaciones::leerEnteroRango(
             "Ingrese ID de la Orden a anular: ", 1, numeric_limits<int>::max(), idO) !=
         ResultadoEntrada::Correcto) return;
+=======
+    if (!leerValor("Ingrese ID de la Orden a anular: ", idO)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
 
     if (!confirmarAccion("Anular orden")) return;
     if (anularOrden(s, idO)) {
@@ -1820,11 +2516,15 @@ void menuVerDetalleOrden(SistemaTaller* s) {
     limpiarTerminal();
     int idO = 0;
     cout << "\n--- CONSULTAR DETALLE DE ORDEN ---" << endl;
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     if (Validaciones::leerEnteroRango(
             "Ingrese ID de la Orden: ", 1, numeric_limits<int>::max(), idO) !=
         ResultadoEntrada::Correcto) return;
+=======
+    if (!leerValor("Ingrese ID de la Orden: ", idO)) return;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     OrdenServicio* o = buscarOrdenPorID(s, idO);
     mostrarDetalleOrden(s, o);
 }
@@ -1837,6 +2537,7 @@ void menuListarOrdenes(SistemaTaller* s) {
     cout << "1. Listar todas" << endl;
     cout << "2. Listar por Estado (Abierta / Cerrada / Anulada)" << endl;
     cout << "3. Listar por Vehiculo (por ID)" << endl;
+<<<<<<< HEAD
     mostrarOpcionVolver();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     int campo = 0;
@@ -1877,6 +2578,29 @@ void menuListarOrdenes(SistemaTaller* s) {
             }
         }
         if (!Validaciones::procesarResultado(resultado, campo)) return;
+=======
+    if (!leerValor("Seleccione una opcion: ", opc)) return;
+
+    if (opc == 1) {
+        OrdenServicio** lista = listaTodasLasOrdenes(s, &cantidad);
+        mostrarListaOrdenes(s, lista, cantidad);
+        delete[] lista;
+    } else if (opc == 2) {
+        char estado[20] = {};
+        cout << "Ingrese estado a buscar (Ej. Abierta): ";
+        cin >> setw(sizeof(estado)) >> estado;
+        OrdenServicio** lista = listaOrdenesPorEstado(s, estado, &cantidad);
+        mostrarListaOrdenes(s, lista, cantidad);
+        delete[] lista;
+    } else if (opc == 3) {
+        int idV = 0;
+        if (!leerValor("Ingrese ID del Vehiculo: ", idV)) return;
+        OrdenServicio** lista = listaOrdenesPorVehiculo(s, idV, &cantidad);
+        mostrarListaOrdenes(s, lista, cantidad);
+        delete[] lista;
+    } else {
+        cout << "[!] Opcion invalida." << endl;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     }
     pausarParaContinuar();
 }
@@ -1912,11 +2636,19 @@ void mostrarDetalleOrden(SistemaTaller* s, OrdenServicio* orden) {
         cout << " [!] Mecanico con ID " << orden->idMecanico << " no encontrado." << endl;
     }
 
+<<<<<<< HEAD
     cout << " --- REPUESTOS UTILIZADOS (" << orden-> cantidadLineasUsadas << ") ---" << endl;
     for (int i = 0; i < orden->cantidadLineasUsadas; i++) {
         cout << "  - " << orden->lineasDetalle[i].nombreRepuesto 
              << " x" << orden->lineasDetalle[i].cantidad 
              << " ($" << orden->lineasDetalle[i].precioUnitario << " c/u)" << endl;
+=======
+    cout << " --- REPUESTOS UTILIZADOS (" << orden->numRepuestosUsados << ") ---" << endl;
+    for (int i = 0; i < orden->numRepuestosUsados; i++) {
+        cout << "  - " << orden->repuestosUsados[i].nombreRepuesto 
+             << " x" << orden->repuestosUsados[i].cantidad 
+             << " ($" << orden->repuestosUsados[i].precioUnitario << " c/u)" << endl;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     }
 
     float total = calcularTotalOrden(orden);
@@ -1981,15 +2713,21 @@ void menuVehiculos(SistemaTaller* s) {
     int opcion = -1;
     while (opcion != 0) {
         limpiarTerminal();
+<<<<<<< HEAD
         cout << "\n--- VEHICULOS ---\n1. Registrar\n";
         if (s->numVehiculos > 0) {
             cout << "2. Buscar\n3. Actualizar\n4. Eliminar\n5. Listar\n";
         }
         cout << "0. Volver\nOpcion: ";
+=======
+        cout << "\n--- VEHICULOS ---\n1. Registrar\n2. Buscar\n3. Actualizar\n"
+             << "4. Eliminar\n5. Listar\n0. Volver\nOpcion: ";
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         if (!(cin >> opcion)) {
             if (cin.eof()) return;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
             entradaConSaltoPendiente = false;
             cout << "[!] Ingrese un numero." << endl;
             continue;
@@ -1999,6 +2737,11 @@ void menuVehiculos(SistemaTaller* s) {
             cout << "[!] Opcion invalida." << endl;
             continue;
         }
+=======
+            cout << "[!] Ingrese un numero." << endl;
+            continue;
+        }
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         switch (opcion) {
             case 1: menuRegistrarVehiculo(s); pausarParaContinuar(); break;
             case 2: menuBuscarVehiculo(s); pausarParaContinuar(); break;
@@ -2015,13 +2758,18 @@ void menuMecanicos(SistemaTaller* s) {
     int opcion = -1;
     while (opcion != 0) {
         limpiarTerminal();
+<<<<<<< HEAD
         cout << "\n--- MECANICOS ---\n1. Registrar\n";
         if (s->numMecanicos > 0) cout << "2. Listar\n";
         cout << "0. Volver\nOpcion: ";
+=======
+        cout << "\n--- MECANICOS ---\n1. Registrar\n2. Buscar\n3. Listar\n0. Volver\nOpcion: ";
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         if (!(cin >> opcion)) {
             if (cin.eof()) return;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
             entradaConSaltoPendiente = false;
             cout << "[!] Ingrese un numero." << endl;
             continue;
@@ -2034,6 +2782,15 @@ void menuMecanicos(SistemaTaller* s) {
         switch (opcion) {
             case 1: menuRegistrarMecanico(s); pausarParaContinuar(); break;
             case 2: menuListarMecanico(s); break;
+=======
+            cout << "[!] Ingrese un numero." << endl;
+            continue;
+        }
+        switch (opcion) {
+            case 1: menuRegistrarMecanico(s); pausarParaContinuar(); break;
+            case 2: menuBuscarMecanico(s); pausarParaContinuar(); break;
+            case 3: menuListarMecanico(s); break;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
             case 0: break;
             default: cout << "[!] Opcion invalida." << endl;
         }
@@ -2044,16 +2801,22 @@ void menuRepuestos(SistemaTaller* s) {
     int opcion = -1;
     while (opcion != 0) {
         limpiarTerminal();
+<<<<<<< HEAD
         cout << "\n--- REPUESTOS ---\n1. Registrar\n";
         if (s->numRepuestos > 0) {
             cout << "2. Buscar\n3. Entrada de mercancia\n4. Cambiar precio\n"
                  << "5. Eliminar\n6. Listar\n";
         }
         cout << "0. Volver\nOpcion: ";
+=======
+        cout << "\n--- REPUESTOS ---\n1. Registrar\n2. Buscar\n3. Entrada de mercancia\n"
+             << "4. Cambiar precio\n5. Eliminar\n6. Listar\n0. Volver\nOpcion: ";
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         if (!(cin >> opcion)) {
             if (cin.eof()) return;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
             entradaConSaltoPendiente = false;
             cout << "[!] Ingrese un numero." << endl;
             continue;
@@ -2063,6 +2826,11 @@ void menuRepuestos(SistemaTaller* s) {
             cout << "[!] Opcion invalida." << endl;
             continue;
         }
+=======
+            cout << "[!] Ingrese un numero." << endl;
+            continue;
+        }
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         switch (opcion) {
             case 1: menuRegistrarRepuesto(s); pausarParaContinuar(); break;
             case 2: menuBuscarRepuesto(s); pausarParaContinuar(); break;
@@ -2077,6 +2845,7 @@ void menuRepuestos(SistemaTaller* s) {
 }
 
 void menuOrdenes(SistemaTaller* s) {
+<<<<<<< HEAD
     if (s->numVehiculos == 0 || s->numMecanicos == 0 || s->numRepuestos == 0) return;
     int opcion = -1;
     while (opcion != 0) {
@@ -2087,10 +2856,19 @@ void menuOrdenes(SistemaTaller* s) {
                  << "5. Anular orden\n6. Ver detalle\n7. Listar ordenes\n";
         }
         cout << "0. Volver\nOpcion: ";
+=======
+    int opcion = -1;
+    while (opcion != 0) {
+        limpiarTerminal();
+        cout << "\n--- ORDENES DE SERVICIO ---\n1. Abrir orden\n2. Agregar repuesto\n"
+             << "3. Quitar repuesto\n4. Cerrar orden\n5. Anular orden\n"
+             << "6. Ver detalle\n7. Listar ordenes\n0. Volver\nOpcion: ";
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         if (!(cin >> opcion)) {
             if (cin.eof()) return;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
             entradaConSaltoPendiente = false;
             cout << "[!] Ingrese un numero." << endl;
             continue;
@@ -2100,6 +2878,11 @@ void menuOrdenes(SistemaTaller* s) {
             cout << "[!] Opcion invalida." << endl;
             continue;
         }
+=======
+            cout << "[!] Ingrese un numero." << endl;
+            continue;
+        }
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         switch (opcion) {
             case 1: menuAbrirOrden(s); pausarParaContinuar(); break;
             case 2: menuAgregarRepuestoAOrden(s); pausarParaContinuar(); break;
@@ -2128,32 +2911,47 @@ int main() {
 
     SistemaTaller sistema = {};
     inicializarSistema(sistema, taller);
+<<<<<<< HEAD
     
     cargarDatos(sistema);
 
+=======
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
     int opcion = -1;
     bool salir = false;
     while (!salir) {
         limpiarTerminal();
         cout << "\n=== " << sistema.taller.nombre << " ===\n"
+<<<<<<< HEAD
              << "1. Vehiculos\n2. Mecanicos\n3. Repuestos\n";
         if (sistema.numVehiculos > 0 && sistema.numMecanicos > 0 && sistema.numRepuestos > 0) {
             cout << "4. Ordenes de servicio\n";
         }
         cout << "5. Lista general de registros\n0. Salir\nOpcion: ";
+=======
+             << "1. Vehiculos\n2. Mecanicos\n3. Repuestos\n4. Ordenes de servicio\n"
+             << "5. Lista general de registros\n0. Salir\nOpcion: ";
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         if (!(cin >> opcion)) {
             if (cin.eof()) break;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+<<<<<<< HEAD
             entradaConSaltoPendiente = false;
             cout << "[!] Ingrese un numero." << endl;
             continue;
         }
         entradaConSaltoPendiente = true;
+=======
+            cout << "[!] Ingrese un numero." << endl;
+            continue;
+        }
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
         switch (opcion) {
             case 1: menuVehiculos(&sistema); break;
             case 2: menuMecanicos(&sistema); break;
             case 3: menuRepuestos(&sistema); break;
+<<<<<<< HEAD
             case 4:
                 if (sistema.numVehiculos > 0 && sistema.numMecanicos > 0 && sistema.numRepuestos > 0) {
                     menuOrdenes(&sistema);
@@ -2168,9 +2966,18 @@ int main() {
                     guardarDatos(sistema);
                 }
                 break;
+=======
+            case 4: menuOrdenes(&sistema); break;
+            case 5: menuListaGeneral(&sistema); break;
+            case 0: salir = confirmarAccion("Salir del sistema"); break;
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
             default: cout << "[!] Opcion invalida." << endl;
         }
     }
     liberarSistema(sistema);
     return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 9bc3494525ee4dc810438ad29b661fd6e3085e54
