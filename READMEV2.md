@@ -190,4 +190,43 @@ Esta clase de fenomenos ocurre debido a la diferencia fundamental entre el almac
 * Volatilidad de las direcciones de memoria: Las direcciones de memoria RAM son dinámicas y efímeras. Al cerrar el programa, el sistema operativo libera esos espacios. Al volver a ejecutarlo, el proceso se carga en un espacio de direcciones diferente (o el sistema operativo aplica restricciones de seguridad como ASLR). Por lo tanto, el número guardado en el archivo binario se convierte en una dirección totalmente inválida para la nueva ejecución.
 * La solución arquitectónica (Fase 2): Para corregir esto en sistemas con persistencia binaria, se deben evitar los punteros dinámicos internos dentro de las estructuras guardadas en disco. En su lugar, se implementan archivos independientes de tamaño fijo (como `detalles.bin`) que se relacionan mediante claves foráneas lógicas (por ejemplo, guardando el `idOrden` en cada detalle), permitiendo almacenar y recuperar registros independientes sin perder la integridad relacional.
 
+### 2) Al agregar un repuesto a una orden se escriben el detalle y el stock. Si el programa se interrumpe entre esas dos escrituras, ¿qué inconsistencia queda según el orden que eligieron? ¿Qué orden de escritura deja el daño más fácil de detectar o corregir, y por qué?
+
+Si el programa se interrumpe entre la escritura del detalle en disco y la actualizacion del inventario, la inconsistencia resultante depende por completo del orden de las operaciones. Al agregar un repuesto a una orden, el sistema realiza dos operaciones criticas en disco de forma secuencial: registrar la linea en `detalles.bin` y al descontar las unidades del inventario en `repuestos.bin`. Ante esta interrupcion se producen dos inconsistencias principales:
+
+- Si el programa se interrumpe justo despues de añadir la linea `detalles.bin` pero antes de modificar `repuestos.bin`, el detalle de la orden queda registrado correctamente en el sistema, pero el stock del repuesto en el inventario principal nunca se descuenta. Como consecuencia se genera una discrepancia contable oculta donde las unidades fisicas se mantienen intactas en el inventario a pesar de haber sido "entregadas" teoricamente en una orde de servicio.
+- Si el prorgrama se interrumpe tras restar las unidades en `repuestos.bin` pero antes de escribir el registro en `detalles.bin` las unidades son sustraidas del almacen fisico, pero la linea del repuesto jamas se asocia a la orden. Ante esto se genera una "merma fantasma" o perdida de stock sin respaldo documental; el inventario disminuye, pero ninguna orden de servicio refleja haber consumido esos componentes.
+
+El orden de escritura que deja el daño más fácil de detectar y corregir es aquel que descuenta primero el inventario antes de registrar el detalle, esto ocurre porque es mucho más sencillo auditar y advertir un faltante físico de mercancía o un descuadre en los contadores que detectar un excedente silencioso de stock. 
+Además, las rutinas de verificación de integridad del Módulo de Mantenimiento pueden contrastar de manera más efectiva las discrepancias cuando los recursos físicos o los contadores del encabezado no cuadran, facilitando su detección y corrección en la siguiente ejecución del sistema.
+
+### 3) En el Proyecto 1 no se podía eliminar un mecánico con órdenes. ¿Qué habría pasado con el historial si se hubiera permitido la eliminación física? ¿Por qué la baja lógica lo resuelve?
+Si se hubiera permitido la eliminación física de un mecánico con órdenes en el Proyecto 1, el historial del taller se habría corrompido de manera grave, al borrar físicamente el registro (ya sea liberando su memoria o desplazando los elementos del arreglo en memoria para rellenar el espacio), todas las órdenes de servicio pasadas que hacían referencia a su identificador único (`idMecanico`) se habrían convertido instantáneamente en referencias rotas u "huérfanas". Al intentar consultar el historial o generar reportes de rendimiento y contabilidad, el sistema habría buscado un ID inexistente, lo que provocaría fallos de lectura, pérdida de datos históricos o la visualización de información errónea al no poder vincular la orden con el perfil del profesional que la ejecutó en su momento.
+
+La baja lógica resuelve este problema manteniendo el registro físicamente intacto pero cambiando su estado a inactivo (mediante un indicador de control). De este modo, aunque el mecánico ya no esté activo para recibir nuevas asignaciones, sus datos permanecen almacenados. Esto preserva la integridad referencial de las claves foráneas, permitiendo que los módulos de reportes históricos consulten sin problemas los nombres y detalles asociados a servicios ya cerrados, sin romper la consistencia general del sistema.
+
+## Observaciones finales: 
+
+Este proyecto demuestra el uso y aplicacion de:
+- Persistencia de datos con archivos binarios.
+- Lectura y escritura binaria con <fstream>.
+- Acceso aleatorio y calculo de offsets on `seekg()` y `seekp()`.
+- Diseño de persistencia de un registro con detalle de tamaño variable.
+- Gestion de borrado logico y mantener historial de registros dados de baja.
+- Coordinacion de operaciones que modifican varios archivos y mantener la integridad referencial.
+
+## Licencia
+
+Este proyecto fue desarrollado con fines académicos.
+
+UNIVERSIDAD RAFAEL URDANETA
+
+LABORATORIO DE PROGAMACION II 
+
+SECCION A
+
+PROFESOR: VICTOR KNEIDER
+
+FECHA DE ENTREGA:
+19-11-2026
 
