@@ -346,6 +346,7 @@ const char* ARCHIVO_MECANICOS = "datos/mecanicos.bin";
 const char* ARCHIVO_REPUESTOS = "datos/repuestos.bin";
 const char* ARCHIVO_ORDENES   = "datos/ordenes.bin";
 const char* ARCHIVO_DETALLES  = "datos/detalles.bin";
+const char* ARCHIVO_TALLER    = "datos/taller.bin";
 const int   VERSION_ARCHIVO   = 1;
 const size_t MAX_DETALLES_POR_CONSULTA = 100;
 
@@ -808,7 +809,7 @@ void cargarDatos(SistemaTaller& s) {
         ARCHIVO_MECANICOS,
         ARCHIVO_REPUESTOS,
         ARCHIVO_ORDENES,
-        ARCHIVO_DETALLES
+        ARCHIVO_DETALLES,
     };
 
     for (const char* nombreArch : archivosEntidades) {
@@ -824,7 +825,7 @@ void cargarDatos(SistemaTaller& s) {
             existente.close();
         }
     }
-    
+
     {
         std::ifstream existente(ARCHIVO_DETALLES, ios::in | ios::binary);
         if (!existente.is_open()) {
@@ -2865,6 +2866,52 @@ void verificarIntegridad() {
                 } else if (strcmp(o.estado, "Abierta") == 0 && m.eliminado) {
                    cout << "[ROTO] Orden ABIERTA #" << o.id << " apunta a un mecanico dado de baja (ID " << m.id << ")" << endl;
                    problemasEncontrados++;   
+                }
+            }
+            f.close();
+        }
+    }
+
+    {
+        ifstream f(ARCHIVO_DETALLES, ios::binary);
+        if (f.is_open()) {
+            ArchivoHeader h;
+            f.read(reinterpret_cast<char*>(&h), sizeof(ArchivoHeader));
+
+            f.seekg(0, ios::end);
+            streamoff tam = f.tellg();
+            streamoff esperado = sizeof(ArchivoHeader) + static_cast<streamoff>(h.cantidadRegistros) * sizeof(DetalleArchivo);
+            if (tam != esperado) {
+                cout << "[ROTO] Header de detalles.bin indica " << h.cantidadRegistros << " registros, pero el espacio en disco no coincide." << endl;
+                problemasEncontrados++;
+            }
+
+            f.seekg(sizeof(ArchivoHeader), ios::beg);
+            for (int i = 0; i < h.cantidadRegistros; ++i) {
+                DetalleArchivo det;
+                f.read(reinterpret_cast<char*>(&det), sizeof(DetalleArchivo));
+
+                bool repuestoExiste = false;
+                {
+                    ifstream fr(ARCHIVO_REPUESTOS, ios::binary);
+                    if (fr.is_open()) {
+                        ArchivoHeader hr; 
+                        fr.read(reinterpret_cast<char*>(&hr), sizeof(ArchivoHeader));
+                        for (int j = 0; j < hr.cantidadRegistros; ++j) {
+                            Repuesto r;
+                            fr.read(reinterpret_cast<char*>(&r), sizeof(Repuesto));
+                            if (r.id == det.idRepuesto) {
+                                repuestoExiste = true;
+                                break;
+                            }
+                        }
+                        fr.close();
+                    }
+                }
+
+                if (!repuestoExiste && !det.eliminado) {
+                    cout << "[ROTO] Detalle ID " << det.idDetalle << " (Orden #" << det.idOrden << ") apunta al repuesto ID " << det.idRepuesto << " (no existe en repuestos.bin)" << endl;
+                    problemasEncontrados++;
                 }
             }
             f.close();
