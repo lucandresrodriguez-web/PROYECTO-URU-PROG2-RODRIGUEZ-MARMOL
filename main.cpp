@@ -3108,15 +3108,35 @@ void menuReportes(SistemaTaller* s) {
 
 //SISTEMA MAIN
 int main() {
+    const char* ARCHIVO_TALLER = "taller.bin";
     Taller taller = {};
-    cout << "Nombre del taller: ";
-    cin.getline(taller.nombre, sizeof(taller.nombre));
-    cout << "RIF: ";
-    cin.getline(taller.rif, sizeof(taller.rif));
-    cout << "Direccion: ";
-    cin.getline(taller.direccion, sizeof(taller.direccion));
-    cout << "Telefono: ";
-    cin.getline(taller.telefono, sizeof(taller.telefono));
+    
+    ifstream archivoTaller(ARCHIVO_TALLER, ios::in | ios::binary);
+    if (archivoTaller.is_open()) {
+        archivoTaller.read(reinterpret_cast<char*>(&taller), sizeof(Taller));
+        archivoTaller.close();
+        cout << "[OK] Datos del taller cargados desde disco (" << taller.nombre << ")." << endl;
+    } else {
+        
+        cout << "\n[!] Primer arranque detectado. Ingrese los datos del taller:\n";
+        cout << "Nombre del taller: ";
+        cin.getline(taller.nombre, sizeof(taller.nombre));
+        cout << "RIF: ";
+        cin.getline(taller.rif, sizeof(taller.rif));
+        cout << "Direccion: ";
+        cin.getline(taller.direccion, sizeof(taller.direccion));
+        cout << "Telefono: ";
+        cin.getline(taller.telefono, sizeof(taller.telefono));
+        taller.fechaCreacion = time(nullptr);
+        taller.fechaUltimaModificacion = taller.fechaCreacion;
+
+        ofstream salidaTaller(ARCHIVO_TALLER, ios::out | ios::binary);
+        if (salidaTaller.is_open()) {
+            salidaTaller.write(reinterpret_cast<const char*>(&taller), sizeof(Taller));
+            salidaTaller.close();
+            cout << "[OK] Archivo taller.bin creado exitosamente." << endl;
+        }
+    }
 
     SistemaTaller sistema = {};
     inicializarSistema(sistema, taller);
