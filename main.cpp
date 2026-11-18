@@ -341,11 +341,11 @@ struct SistemaTaller {
 };
 
 // PERSISTENCIA ARCHIVOS BIN 
-const char* ARCHIVO_VEHICULOS = "vehiculos.bin";
-const char* ARCHIVO_MECANICOS = "mecanicos.bin";
-const char* ARCHIVO_REPUESTOS = "repuestos.bin";
-const char* ARCHIVO_ORDENES   = "ordenes.bin";
-const char* ARCHIVO_DETALLES  = "detalles.bin";
+const char* ARCHIVO_VEHICULOS = "datos/vehiculos.bin";
+const char* ARCHIVO_MECANICOS = "datos/mecanicos.bin";
+const char* ARCHIVO_REPUESTOS = "datos/repuestos.bin";
+const char* ARCHIVO_ORDENES   = "datos/ordenes.bin";
+const char* ARCHIVO_DETALLES  = "datos/detalles.bin";
 const int   VERSION_ARCHIVO   = 1;
 const size_t MAX_DETALLES_POR_CONSULTA = 100;
 
@@ -803,6 +803,28 @@ void guardarDatos(SistemaTaller& s) {
 }
 
 void cargarDatos(SistemaTaller& s) {
+    const char* archivosEntidades[] = {
+        ARCHIVO_VEHICULOS,
+        ARCHIVO_MECANICOS,
+        ARCHIVO_REPUESTOS,
+        ARCHIVO_ORDENES,
+        ARCHIVO_DETALLES
+    };
+
+    for (const char* nombreArch : archivosEntidades) {
+        ifstream existente(nombreArch, ios::in | ios::binary);
+        if (!existente.is_open()) {
+            ofstream nuevo(nombreArch, ios::out | ios::binary);
+            if (nuevo.is_open()) {
+                ArchivoHeader header = {0, 1, 0, VERSION_ARCHIVO};
+                nuevo.write(reinterpret_cast<char*>(&header), sizeof(ArchivoHeader));
+                nuevo.close();
+            }
+        } else {
+            existente.close();
+        }
+    }
+    
     {
         std::ifstream existente(ARCHIVO_DETALLES, ios::in | ios::binary);
         if (!existente.is_open()) {
