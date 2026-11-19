@@ -331,12 +331,12 @@ struct SistemaTaller {
 };
 
 // PERSISTENCIA ARCHIVOS BIN 
-const char* ARCHIVO_VEHICULOS = "datos/vehiculos.bin";
-const char* ARCHIVO_MECANICOS = "datos/mecanicos.bin";
-const char* ARCHIVO_REPUESTOS = "datos/repuestos.bin";
-const char* ARCHIVO_ORDENES   = "datos/ordenes.bin";
-const char* ARCHIVO_DETALLES  = "datos/detalles.bin";
-const char* ARCHIVO_TALLER    = "datos/taller.bin";
+const char* ARCHIVO_VEHICULOS = "Datos/vehiculos.bin";
+const char* ARCHIVO_MECANICOS = "Datos/mecanicos.bin";
+const char* ARCHIVO_REPUESTOS = "Datos/repuestos.bin";
+const char* ARCHIVO_ORDENES   = "Datos/ordenes.bin";
+const char* ARCHIVO_DETALLES  = "Datos/detalles.bin";
+const char* ARCHIVO_TALLER    = "Datos/taller.bin";
 const int   VERSION_ARCHIVO   = 1;
 const size_t MAX_DETALLES_POR_CONSULTA = 100;
 const size_t MAX_RESULTADOS_POR_CONSULTA = 100;
@@ -4224,10 +4224,35 @@ int main() {
     while (!salir) {
         limpiarTerminal();
 
+        ArchivoHeader headerVehiculos;
+        ArchivoHeader headerMecanicos;
+        ArchivoHeader headerRepuestos;
+        ResultadoArchivoDetalles lecturaVehiculos = leerHeaderVehiculos(headerVehiculos);
+        ResultadoArchivoDetalles lecturaMecanicos = leerHeaderMecanicos(headerMecanicos);
+        ResultadoArchivoDetalles lecturaRepuestos = leerHeaderRepuestos(headerRepuestos);
+        const bool archivosRequeridosDisponibles =
+            lecturaVehiculos == ResultadoArchivoDetalles::Correcto &&
+            lecturaMecanicos == ResultadoArchivoDetalles::Correcto &&
+            lecturaRepuestos == ResultadoArchivoDetalles::Correcto;
+        const bool puedeGestionarOrdenes = archivosRequeridosDisponibles &&
+            headerVehiculos.registrosActivos > 0 &&
+            headerMecanicos.registrosActivos > 0 &&
+            headerRepuestos.registrosActivos > 0;
+
+        if (!puedeGestionarOrdenes) {
+            if (!archivosRequeridosDisponibles) {
+                cout << "[!] No se pudo verificar los archivos requeridos para gestionar ordenes."
+                     << endl;
+            } else {
+                cout << "[!] Registre al menos un vehiculo, mecanico y repuesto activo "
+                     << "para habilitar Ordenes de servicio." << endl;
+            }
+        }
+
         cout << "\n=== " << sistema.taller.nombre << " ===\n"
-             << "1. Vehiculos\n2. Mecanicos\n3. Repuestos\n"
-             << "4. Ordenes de servicio\n5. Reportes\n6. Mantenimiento\n"
-             << "0. Salir\nOpcion: ";
+             << "1. Vehiculos\n2. Mecanicos\n3. Repuestos\n";
+        if (puedeGestionarOrdenes) cout << "4. Ordenes de servicio\n";
+        cout << "5. Reportes\n6. Mantenimiento\n0. Salir\nOpcion: ";
         if (!(cin >> opcion)) {
             if (cin.eof()) break;
             cin.clear();
@@ -4241,7 +4266,19 @@ int main() {
             case 1: menuVehiculos(&sistema); break;
             case 2: menuMecanicos(&sistema); break;
             case 3: menuRepuestos(&sistema); break;
-            case 4: menuOrdenes(&sistema); break;
+            case 4:
+                if (puedeGestionarOrdenes) {
+                    menuOrdenes(&sistema);
+                } else if (archivosRequeridosDisponibles) {
+                    cout << "[!] Registre al menos un vehiculo, mecanico y repuesto activo "
+                         << "para gestionar ordenes." << endl;
+                    pausarParaContinuar();
+                } else {
+                    cout << "[!] No se pudo verificar los archivos requeridos para gestionar ordenes."
+                         << endl;
+                    pausarParaContinuar();
+                }
+                break;
             case 5: menuReportes(&sistema); break;
             case 6: menuMantenimiento(&sistema); break;
             case 0: 
